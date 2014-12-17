@@ -136,6 +136,66 @@ function showPlayerSum() {
     $("#playerSum").html(result);
 }
 
+function CheckActions() {
+    // if dealer has blackjack, end game
+    // if player has blackjack, end game
+    // if player has over 21, end game
+
+}
+
+function Ones(value) {
+    return value + 1;
+}
+
+function Elevens(value) {
+    return value + 11;
+}
+
+function GetPossibleSums(hand) {
+    // return valid sums based on current hand
+    var result = [0];
+
+    hand.forEach(function (card) {
+        var newResult = [];
+
+        switch (card.face) {
+            case "A":
+                var ones = result.map(Ones);
+                var elevens = result.map(Elevens);
+
+                ones.forEach(function (value) {
+                    if (value <= 21) {
+                        newResult.push(value);
+                    }
+                });
+                elevens.forEach(function (value) {
+                    if (value <= 21) {
+                        newResult.push(value);
+                    }
+                })
+
+                break;
+            case "T":
+            case "J":
+            case "Q":
+            case "K":
+                result.forEach(function (n) {
+                    newResult.push(n + 10);
+                });
+                break;
+            default:
+                result.forEach(function (n) {
+                    newResult.push(n + Number(card.face))
+                })
+
+        };
+
+        result = newResult;
+    });
+
+    return result;
+}
+
 $().ready(function () {
     createDeck();
     debugShowNextTwoCards();
