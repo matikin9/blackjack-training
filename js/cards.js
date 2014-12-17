@@ -89,11 +89,51 @@ function debugShowNextTwoCards() {
 }
 
 function showDealerSum() {
-    
+    var total = [0, 0];
+    for (var c in DealerHand) {
+        if (DealerHand[c].value.length === 2) {
+            total[0] += DealerHand[c].value[0];
+            total[1] += DealerHand[c].value[1];
+        } else {
+            total[0] += DealerHand[c].value[0];
+
+            if (total[1] != 0) {
+                total[1] += DealerHand[c].value[0];
+            }
+        }
+    }
+
+    var result = "";
+    for (var v in total) {
+        if (total[v] != 0) {
+            result += total[v].toString() + " ";
+        }
+    }
+    $("#dealerSum").html(result);
 }
 
 function showPlayerSum() {
-    
+    var total = [0, 0];
+    for (var c in PlayerHand) {
+        if (PlayerHand[c].value.length === 2) {
+            total[0] += PlayerHand[c].value[0];
+            total[1] += PlayerHand[c].value[1];
+        } else {
+            total[0] += PlayerHand[c].value[0];
+
+            if (total[1] != 0) {
+                total[1] += PlayerHand[c].value[0];
+            }
+        }
+    }
+
+    var result = "";
+    for (var v in total) {
+        if (total[v] != 0) {
+            result += total[v].toString() + " ";
+        }
+    }
+    $("#playerSum").html(result);
 }
 
 $().ready(function () {
@@ -102,10 +142,14 @@ $().ready(function () {
 
     $("button#deal").click(function () {
         dealGame();
+        showDealerSum();
+        showPlayerSum();
     });
 
     $("button#hit").click(function () {
         hitPlayer();
+        showDealerSum();
+        showPlayerSum();
     });
 
     $("button#stay").click(function () {
