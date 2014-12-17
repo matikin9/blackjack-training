@@ -5,7 +5,7 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Black</title>
+        <title>Blackjack Training Simulator</title>
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
         <!-- Optional theme -->
@@ -13,20 +13,30 @@
     </head>
     <body>
         <div class="container">
-            <h1>Hello, world!</h1>
+            <h1>Blackjack Training Simulator</h1>
             <div class="row">
-                <div class="col-md-2"></div>
-                <div class="col-md-8">
-                    <div id="debug"></div>
+                <div class="col-md-2">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Debugger</div>
+                        <div id="debug" class="panel-body"></div>
+                    </div>
                 </div>
-                <div class="col-md-2"></div>
-            </div>
-            <div class="row">
-                <div class="col-md-2"></div>
                 <div class="col-md-8">
-                    test
+                    <div id="dealerHand" class="container"></div>
+                    <div id="playerHand" class="container"></div>
                 </div>
-                <div class="col-md-2"></div>
+                <div class="col-md-2">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Actions</div>
+                        <div id="actions" class="panel-body">
+                            <button type="button" class="btn btn-default" id="deal">Deal</button><br /><br />
+                            <button type="button" class="btn btn-default" id="hit">Hit</button><br /><br />
+                            <button type="button" class="btn btn-default" id="stay">Stay</button><br /><br />
+                            <button type="button" class="btn btn-default" id="double">Double</button><br /><br />
+                            <button type="button" class="btn btn-default" id="split">Split</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
