@@ -1,21 +1,6 @@
-var suits = [ "S", "H", "C", "D" ];
-var faces = [
-    ["A", [1, 11]],
-    ["2",[2]],
-    ["3",[3]],
-    ["4",[4]],
-    ["5",[5]],
-    ["6",[6]],
-    ["7",[7]],
-    ["8",[8]],
-    ["9",[9]],
-    ["T",[10]],
-    ["J",[10]],
-    ["Q",[10]],
-    ["K",[10]]
-];
-var deck = [];
-
+var Suits = [ "S", "H", "C", "D" ];
+var Faces = [ "A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K" ];
+var Deck = [];
 var DealerHand = [];
 var PlayerHand = [];
 
@@ -28,40 +13,175 @@ function SortByNum(a, b) {
 function createCard(suit, face, num) {
     var card = new Object();
     card.suit = suit;
-    card.face = face[0];
-    card.value = face[1];
+    card.face = face;
     card.number = num;
     return card;
 }
 
-function createDeck() {
-    for (var i = 0; i < suits.length; i++) {
-        for (var j = 0; j < faces.length; j++) {
-            deck.push(createCard(suits[i], faces[j], Math.random()));
+function IsBlackjack(hand) {
+    if (hand.length != 2) {
+        return false;
+    } else {
+        switch (hand[0].face) {
+            case "A":
+                switch (hand[1].face) {
+                    case "T":
+                    case "J":
+                    case "Q":
+                    case "K":
+                        return true;
+                    default:
+                        return false;
+                }
+            case "T":
+            case "J":
+            case "Q":
+            case "K":
+                if (hand[1].face === "A") {
+                    return true;
+                } else {
+                    return false;
+                }
+            default:
+                return false;
         }
     }
-    deck.sort(SortByNum);
+}
+
+function IsPair(hand) {
+    if (hand.length != 2) {
+        return false;
+    } else {
+        switch (hand[0].face) {
+            case "T":
+            case "J":
+            case "Q":
+            case "K":
+                switch (hand[1].face) {
+                    case "T":
+                    case "J":
+                    case "Q":
+                    case "K":
+                        return true;
+                    default:
+                        return false;
+                }
+            default:
+                if (hand[0].face === hand[1].face) {
+                    return true;
+                } else {
+                    return false;
+                }
+        }
+    }
+}
+
+function ValidSums(hand) {
+    var result = [0];
+
+    hand.forEach(function (card) {
+        var newResult = [];
+        switch (card.face) {
+            case "A":
+                result.forEach(function (value) {
+                    if (value + 1 <= 21) {
+                        newResult.push(value + 1);
+
+                        if (value + 11 <= 21) {
+                            newResult.push(value + 11);
+                        }
+                    }
+                    
+                });
+                break;
+            case "T":
+            case "J":
+            case "Q":
+            case "K":
+                result.forEach(function (value) {
+                    if (value + 10 <= 21) {
+                        newResult.push(value + 10);
+                    }
+                });
+                break;
+            default:
+                result.forEach(function (value) {
+                    if (value + Number(card.face) <= 21) {
+                        newResult.push(value + Number(card.face));
+                    }
+                });
+
+        }
+        result = newResult;
+    });
+
+    return result;
+}
+
+function createDeck() {
+    Deck = [];
+    DealerHand = [];
+    PlayerHand = [];
+
+    Suits.forEach(function (suit) {
+        Faces.forEach(function (face) {
+            Deck.push(createCard(suit, face, Math.random()));
+        });
+    });
+
+    Deck.sort(SortByNum);
 }
 
 function dealGame() {
-    DealerHand = [];
-    DealerHand.push(deck.shift());
+    createDeck();
 
-    PlayerHand = [];
-    PlayerHand.push(deck.shift());
+    DealerHand.push(Deck.shift());
+    PlayerHand.push(Deck.shift());
 
-    debugShowNextTwoCards();
-
+    DealerHand.push(Deck.shift());
+    PlayerHand.push(Deck.shift());
+    
     showDealerHand();
     showPlayerHand();
+
+    if (IsBlackjack(DealerHand)) {
+        $("span#gameResults").html("Blackjack! Dealer wins!");
+    } else if (IsBlackjack(PlayerHand)) {
+        $("span#gameResults").html("Blackjack! Player wins!");
+    } else {
+        $("button#deal").prop('disabled', true);
+        $("button#hit").prop('disabled', false);
+        $("button#stay").prop('disabled', false);
+        $("button#double").prop('disabled', false);
+        $("span#gameResults").html("");
+    }
+
+    if (IsPair(PlayerHand)) {
+        $("button#split").prop('disabled', false);
+        $("span#gameResults").html("");
+    }
+    
+    console.log(ValidSums(PlayerHand));
 }
 
 function hitPlayer() {
-    PlayerHand.push(deck.shift());
-    debugShowNextTwoCards();
+    PlayerHand.push(Deck.shift());
+
+    $("button#double").prop('disabled', true);
+    $("button#split").prop('disabled', true);
 
     showDealerHand();
     showPlayerHand();
+
+    var result = ValidSums(PlayerHand);
+    if (result.length === 0) {
+        $("span#gameResults").html("Player busts, Dealer wins!");
+        $("button#deal").prop('disabled', false);
+        $("button#hit").prop('disabled', true);
+        $("button#stay").prop('disabled', true);
+    } else {
+        console.log("Sums: " + result)
+    }
 }
 
 function showDealerHand() {
@@ -84,136 +204,89 @@ function showPlayerHand() {
     $("#playerHand").html("Player's hand: " + results);
 }
 
-function debugShowNextTwoCards() {
-    $("#debug").html(deck[0].suit + deck[0].face + " " + deck[1].suit + deck[1].face);
+function endPlayerTurn() {
+    $("button#hit").prop('disabled', true);
+    $("button#stay").prop('disabled', true);
+    $("button#double").prop('disabled', true);
+    $("button#split").prop('disabled', true);
+    $("button#deal").prop('disabled', false);
 }
 
-function showDealerSum() {
-    var total = [0, 0];
-    for (var c in DealerHand) {
-        if (DealerHand[c].value.length === 2) {
-            total[0] += DealerHand[c].value[0];
-            total[1] += DealerHand[c].value[1];
+function playDealerHand() {
+    var sums = ValidSums(DealerHand);
+    var dealerDone = false;
+    // if any valid sum is 17 or greater, stay.
+
+    while (!dealerDone) {
+        if (sums.length == 0) {
+            dealerDone = true;
         } else {
-            total[0] += DealerHand[c].value[0];
-
-            if (total[1] != 0) {
-                total[1] += DealerHand[c].value[0];
-            }
+            sums.forEach(function (value) {
+                if (value >= 17) {
+                    dealerDone = true;
+                }
+            });
         }
-    }
 
-    var result = "";
-    for (var v in total) {
-        if (total[v] != 0) {
-            result += total[v].toString() + " ";
-        }
-    }
-    $("#dealerSum").html(result);
-}
-
-function showPlayerSum() {
-    var total = [0, 0];
-    for (var c in PlayerHand) {
-        if (PlayerHand[c].value.length === 2) {
-            total[0] += PlayerHand[c].value[0];
-            total[1] += PlayerHand[c].value[1];
+        if (dealerDone) {
+            break;
         } else {
-            total[0] += PlayerHand[c].value[0];
-
-            if (total[1] != 0) {
-                total[1] += PlayerHand[c].value[0];
-            }
+            DealerHand.push(Deck.shift());
+            sums = ValidSums(DealerHand);
+            showDealerHand()
         }
     }
+    
+    if (sums.length == 0) {
+        $("span#gameResults").html("Dealer busts, Player wins.");
+    } else {
+        var playerSums = ValidSums(PlayerHand);
+        var dealerSums = ValidSums(DealerHand);
+        var playerResults = "win";
 
-    var result = "";
-    for (var v in total) {
-        if (total[v] != 0) {
-            result += total[v].toString() + " ";
-        }
-    }
-    $("#playerSum").html(result);
-}
+        playerSums.forEach(function (v1) {
+            dealerSums.forEach(function (v2) {
+                if (v2 > v1) {
+                    playerResults = "lose";
+                } else if (v2 === v1) {
+                    playerResults = "tie";
+                }
+            });
+        });
 
-function CheckActions() {
-    // if dealer has blackjack, end game
-    // if player has blackjack, end game
-    // if player has over 21, end game
-
-}
-
-function Ones(value) {
-    return value + 1;
-}
-
-function Elevens(value) {
-    return value + 11;
-}
-
-function GetPossibleSums(hand) {
-    // return valid sums based on current hand
-    var result = [0];
-
-    hand.forEach(function (card) {
-        var newResult = [];
-
-        switch (card.face) {
-            case "A":
-                var ones = result.map(Ones);
-                var elevens = result.map(Elevens);
-
-                ones.forEach(function (value) {
-                    if (value <= 21) {
-                        newResult.push(value);
-                    }
-                });
-                elevens.forEach(function (value) {
-                    if (value <= 21) {
-                        newResult.push(value);
-                    }
-                })
-
+        switch (playerResults) {
+            case "win":
+                $("span#gameResults").html("Player wins!");
                 break;
-            case "T":
-            case "J":
-            case "Q":
-            case "K":
-                result.forEach(function (n) {
-                    newResult.push(n + 10);
-                });
+            case "tie":
+                $("span#gameResults").html("Tie!");
+                break;
+            case "lose":
+                $("span#gameResults").html("Dealer wins!");
                 break;
             default:
-                result.forEach(function (n) {
-                    newResult.push(n + Number(card.face))
-                })
-
-        };
-
-        result = newResult;
-    });
-
-    return result;
+                return;
+        }        
+    }
 }
 
 $().ready(function () {
-    createDeck();
-    debugShowNextTwoCards();
+    $("button#hit").prop('disabled', true);
+    $("button#stay").prop('disabled', true);
+    $("button#double").prop('disabled', true);
+    $("button#split").prop('disabled', true);
 
     $("button#deal").click(function () {
         dealGame();
-        showDealerSum();
-        showPlayerSum();
     });
 
     $("button#hit").click(function () {
         hitPlayer();
-        showDealerSum();
-        showPlayerSum();
     });
 
     $("button#stay").click(function () {
-
+        endPlayerTurn();
+        playDealerHand();
     });
 
     $("button#double").click(function () {
