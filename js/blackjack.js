@@ -295,4 +295,8 @@ $().ready(function () {
 
     $("#dealerHand").html("Dealer's hand: ");
     $("#playerHand").html("Player's hand: ");
+
+    $("button#chart").click(function () {
+        $(".strategy-chart").toggle();
+    });
 });
