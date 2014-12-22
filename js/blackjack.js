@@ -126,7 +126,8 @@ function dealGame() {
     Dealer = new Entity(new Hand(0, hand1));
     Player = new Entity(new Hand(0, hand2));
 
-    showDealerHand(Dealer.hands[0]);
+    // Only show dealer's first card when dealing:
+    $("#dealerHand").html("Dealer's hand: " + Dealer.hands[0].cards[0].suit.toString() + Dealer.hands[0].cards[0].face.toString());
     showPlayerHand(Player.hands[0]);
 
     if (Dealer.hands[0].isBlackjack()) {
