@@ -265,38 +265,64 @@ function playSplit(i) {
     
 }
 
+$(this).keyup(function (e) {
+    switch (e.which) {
+    case 72:
+    alert("Hit");
+    break;
+    case 83:
+    alert("Stay");
+    break;
+    case 68:
+    alert("Double");
+    break;
+    case 80:
+    alert("Split");
+    break;
+    case 32:
+    alert("Deal");
+    break;
+    default:
+    // nothing
+    }
+});
+
+
+$("button#deal").click(function () {
+    dealGame();
+});
+
+$("button#hit").click(function () {
+    hitPlayer(0); // i = which hand to hit.
+});
+
+$("button#stay").click(function () {
+    endPlayerTurn();
+    playDealerHand();
+});
+
+$("button#double").click(function () {
+    playDouble(0); // i = which hand to double
+    endPlayerTurn();
+});
+
+$("button#split").click(function () {
+    playSplit(0);
+});
+
+$("button#chart").click(function () {
+    $(".strategy-chart").toggle();
+});
+
 $().ready(function () {
     $("button#hit").prop('disabled', true);
     $("button#stay").prop('disabled', true);
     $("button#double").prop('disabled', true);
     $("button#split").prop('disabled', true);
 
-    $("button#deal").click(function () {
-        dealGame();
-    });
-
-    $("button#hit").click(function () {
-        hitPlayer(0); // i = which hand to hit.
-    });
-
-    $("button#stay").click(function () {
-        endPlayerTurn();
-        playDealerHand();
-    });
-
-    $("button#double").click(function () {
-        playDouble(0); // i = which hand to double
-        endPlayerTurn();
-    });
-
-    $("button#split").click(function () {
-        playSplit(0);
-    });
-
     $("#dealerHand").html("Dealer's hand: ");
     $("#playerHand").html("Player's hand: ");
 
-    $("button#chart").click(function () {
-        $(".strategy-chart").toggle();
-    });
+    $(".strategy-chart").hide();
+
 });
