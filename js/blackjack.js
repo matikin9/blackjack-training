@@ -269,23 +269,25 @@ function playSplit(i) {
 
 $(this).keyup(function (e) {
     switch (e.which) {
-    case 72:
-    alert("Hit");
-    break;
-    case 83:
-    alert("Stay");
-    break;
-    case 68:
-    alert("Double");
-    break;
-    case 80:
-    alert("Split");
-    break;
-    case 32:
-    alert("Deal");
-    break;
-    default:
-    // nothing
+        case 72:
+            hitPlayer(0);
+            break;
+        case 83:
+            endPlayerTurn();
+            playDealerHand();
+            break;
+        case 68:
+            playDouble(0);
+            endPlayerTurn();
+            break;
+        case 80:
+            playSplit(0);
+            break;
+        case 32:
+            dealGame();
+            break;
+        default:
+            // nothing
     }
 });
 
