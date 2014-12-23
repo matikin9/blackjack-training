@@ -191,6 +191,7 @@ function endPlayerTurn() {
 }
 
 function playDealerHand() {
+    showDealerHand(Dealer.hands[0]);
     var dealerValidSums = Dealer.hands[0].validSums();
     var dealerDone = false;
     // if any valid sum is 17 or greater, stay.
