@@ -26,7 +26,7 @@ RH  Surrender/Hit
 5. Dealer Peeks         true
 */
 var strat1 = {
-    hard:   "H,H,H,H,H,H,H,H,H,H;H,H,H,H,H,H,H,H,H,H;H,H,H,H,H,H,H,H,H,H;H,H,H,DH,DH,H,H,H,H,H;DH,DH,DH,DH,DH,H,H,H,H,H;DH,DH,DH,DH,DH,DH,DH,DH,H,H;DH,DH,DH,DH,DH,DH,DH,DH,DH,DH;H,H,S,S,S,H,H,H,H,H;S,S,S,S,S,H,H,H,H,H;S,S,S,S,S,H,H,H,H,H;S,S,S,S,S,H,H,H,H,H;S,S,S,S,S,H,H,H,H,H;S,S,S,S,S,S,S,S,S,S;S,S,S,S,S,S,S,S,S,S;S,S,S,S,S,S,S,S,S,S;S,S,S,S,S,S,S,S,S,S;S,S,S,S,S,S,S,S,S,S",
-    soft:   "H,H,DH,DH,DH,H,H,H,H,H;H,H,DH,DH,DH,H,H,H,H,H;H,H,DH,DH,DH,H,H,H,H,H;H,H,DH,DH,DH,H,H,H,H,H;DH,DH,DH,DH,DH,H,H,H,H,H;S,DS,DS,DS,DS,S,S,H,H,S;S,S,S,S,DS,S,S,S,S,S;S,S,S,S,S,S,S,S,S,S;S,S,S,S,S,S,S,S,S,S",
-    pair:   "P,P,P,P,P,P,H,H,H,H;P,P,P,P,P,P,P,H,H,H;H,H,P,P,P,H,H,H,H,H;DH,DH,DH,DH,DH,DH,DH,DH,H,H;P,P,P,P,P,P,H,H,H,H;P,P,P,P,P,P,P,H,S,H;P,P,P,P,P,P,P,P,P,P;P,P,P,P,P,S,P,P,S,S;S,S,S,S,S,S,S,S,S,S;P,P,P,P,P,P,P,P,P,P"
+    hard: "H,H,H,H,H,H,H,H,H,H;H,H,H,H,H,H,H,H,H,H;H,H,H,H,H,H,H,H,H,H;H,H,H,DH,DH,H,H,H,H,H;DH,DH,DH,DH,DH,H,H,H,H,H;DH,DH,DH,DH,DH,DH,DH,DH,H,H;DH,DH,DH,DH,DH,DH,DH,DH,DH,DH;H,H,S,S,S,H,H,H,H,H;S,S,S,S,S,H,H,H,H,H;S,S,S,S,S,H,H,H,H,H;S,S,S,S,S,H,H,H,H,H;S,S,S,S,S,H,H,H,H,H;S,S,S,S,S,S,S,S,S,S;S,S,S,S,S,S,S,S,S,S;S,S,S,S,S,S,S,S,S,S;S,S,S,S,S,S,S,S,S,S;S,S,S,S,S,S,S,S,S,S",
+    soft: "H,H,DH,DH,DH,H,H,H,H,H;H,H,DH,DH,DH,H,H,H,H,H;H,H,DH,DH,DH,H,H,H,H,H;H,H,DH,DH,DH,H,H,H,H,H;DH,DH,DH,DH,DH,H,H,H,H,H;S,DS,DS,DS,DS,S,S,H,H,S;S,S,S,S,DS,S,S,S,S,S;S,S,S,S,S,S,S,S,S,S;S,S,S,S,S,S,S,S,S,S",
+    pair: "P,P,P,P,P,P,H,H,H,H;P,P,P,P,P,P,P,H,H,H;H,H,P,P,P,H,H,H,H,H;DH,DH,DH,DH,DH,DH,DH,DH,H,H;P,P,P,P,P,P,H,H,H,H;P,P,P,P,P,P,P,H,S,H;P,P,P,P,P,P,P,P,P,P;P,P,P,P,P,S,P,P,S,S;S,S,S,S,S,S,S,S,S,S;P,P,P,P,P,P,P,P,P,P"
 };

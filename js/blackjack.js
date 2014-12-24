@@ -1,6 +1,7 @@
 var Dealer = {};
 var Player = {};
 var Deck = [];
+var activeStrategy = createStrategy(strat1);
 
 function Entity(hand) {
     this.hands = [];
@@ -300,6 +301,7 @@ $(this).keyup(function (e) {
 
 $("button#deal").click(function () {
     dealGame();
+    var validAction = activeStrategy.getValidAction(Dealer.hands[0].cards[0], Player.hands[0]);
 });
 
 $("button#hit").click(function () {
@@ -324,7 +326,7 @@ $("button#chart").click(function () {
     $(".strategy-chart").toggle();
 });
 
-var activeStrategy = createStrategy(strat1);
+
 
 $().ready(function () {
     $("button#hit").prop('disabled', true);

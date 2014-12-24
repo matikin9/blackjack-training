@@ -23,21 +23,41 @@ function buildTable(s, player) {
 function createStrategy(stratsource) {
     var strat = new Object();
 
+    // tables are objects[player][dealer]
     strat.hardTable = buildTable(stratsource.hard, playerHard);
     strat.softTable = buildTable(stratsource.soft, playerSoft);
     strat.pairTable = buildTable(stratsource.pair, playerPair);
 
     strat.getValidAction = function (dealerCard, playerHand) {
-        if (playerHand.IsPair()) {
+        var result;
+        var dealerCardValue;
+        var playerHandValue1;
+        var playerHandValue2;
+
+        if (dealerCard.face === "J" || dealerCard.face === "Q" || dealerCard.face === "K") {
+            dealerCardValue = "T";
+        } else {
+            dealerCardValue = dealerCard.face;
+        }
+
+        
+
+
+        if (playerHand.isPair()) {
             // use Pair table
+            result = strat.pairTable[playerHand.cards[0].face][dealerCardValue];
         } else {
             var ace = playerHand.hasAce();
             if (ace >= 0) {
                 // use Soft table
+                result = strat.softTable[playerHand.cards[0].face][dealerCardValue];
             } else {
                 // use Hard table
+                result = strat.HardTable[playerHand.cards[0].face][dealerCardValue];
             }
         }
+
+        return result;
     };
 
     return strat;
