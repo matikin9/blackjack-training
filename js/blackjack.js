@@ -110,6 +110,15 @@ function Hand(bet, cards) {
             }
         }
     };
+
+    this.hasAce = function () {
+        for (var i = 0; i < cards.length; i++) {
+            if (cards[i].face === "A") {
+                return i;
+            }
+        }
+        return -1;
+    };
 }
 
 function dealGame() {
@@ -314,6 +323,8 @@ $("button#split").click(function () {
 $("button#chart").click(function () {
     $(".strategy-chart").toggle();
 });
+
+var activeStrategy = createStrategy(strat1);
 
 $().ready(function () {
     $("button#hit").prop('disabled', true);
