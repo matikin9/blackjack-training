@@ -2,6 +2,7 @@ var Dealer = {};
 var Player = {};
 var Deck = [];
 var activeStrategy = createStrategy(strat1);
+var GameOver = false;
 
 function Entity(hand) {
     this.hands = [];
@@ -51,35 +52,18 @@ function Hand(bet, cards) {
             result = newResult;
         });
 
-        return result;
+        return result.sort();
     };
 
     this.isBlackjack = function () {
         if (this.cards.length != 2) {
             return false;
         } else {
-            switch (this.cards[0].face) {
-                case "A":
-                    switch (this.cards[1].face) {
-                        case "T":
-                        case "J":
-                        case "Q":
-                        case "K":
-                            return true;
-                        default:
-                            return false;
-                    }
-                case "T":
-                case "J":
-                case "Q":
-                case "K":
-                    if (this.cards[1].face === "A") {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                default:
-                    return false;
+            if ((this.cards[0].faceValue === "A" && this.cards[1].faceValue === "T") ||
+            (this.cards[0].faceValue === "T" && this.cards[1].faceValue === "A")) {
+                return true;
+            } else {
+                return false;
             }
         }
     };
@@ -88,33 +72,17 @@ function Hand(bet, cards) {
         if (this.cards.length != 2) {
             return false;
         } else {
-            switch (this.cards[0].face) {
-                case "T":
-                case "J":
-                case "Q":
-                case "K":
-                    switch (this.cards[1].face) {
-                        case "T":
-                        case "J":
-                        case "Q":
-                        case "K":
-                            return true;
-                        default:
-                            return false;
-                    }
-                default:
-                    if (this.cards[0].face === this.cards[1].face) {
-                        return true;
-                    } else {
-                        return false;
-                    }
+            if (this.cards[0].faceValue === this.cards[1].faceValue) {
+                return true;
+            } else {
+                return false;
             }
         }
     };
 
     this.hasAce = function () {
         for (var i = 0; i < cards.length; i++) {
-            if (cards[i].face === "A") {
+            if (cards[i].faceValue === "A") {
                 return i;
             }
         }
@@ -124,6 +92,7 @@ function Hand(bet, cards) {
 
 function dealGame() {
     Deck = createDeck(1);
+    GameOver = false;
 
     var hand1 = [];
     var hand2 = [];
@@ -142,9 +111,11 @@ function dealGame() {
 
     if (Dealer.hands[0].isBlackjack()) {
         $("span#gameResults").html("Blackjack! Dealer wins!");
+        GameOver = true;
 
     } else if (Player.hands[0].isBlackjack()) {
         $("span#gameResults").html("Blackjack! Player wins!");
+        GameOver = true;
 
     } else {
         $("button#deal").prop('disabled', true);
@@ -172,6 +143,7 @@ function hitPlayer(i) {
 
     if (result.length === 0) {
         $("span#gameResults").html("Player busts, Dealer wins!");
+        GameOver = true;
         $("button#deal").prop('disabled', false);
         $("button#hit").prop('disabled', true);
         $("button#stay").prop('disabled', true);
@@ -227,6 +199,8 @@ function playDealerHand() {
     
     if (dealerValidSums.length == 0) {
         $("span#gameResults").html("Dealer busts, Player wins.");
+        GameOver = true;
+
     } else {
         var playerSums = Player.hands[0].validSums(); // ONLY COMPARES THE FIRST HAND
         var dealerSums = Dealer.hands[0].validSums();
@@ -245,12 +219,15 @@ function playDealerHand() {
         switch (playerResults) {
             case "win":
                 $("span#gameResults").html("Player wins!");
+                GameOver = true;
                 break;
             case "tie":
                 $("span#gameResults").html("Tie!");
+                GameOver = true;
                 break;
             case "lose":
                 $("span#gameResults").html("Dealer wins!");
+                GameOver = true;
                 break;
             default:
                 return;
@@ -266,6 +243,7 @@ function playDouble(i) {
 
     if (result.length == 0) {
         $("span#gameResults").html("Player busts, Dealer wins!");
+        GameOver = true;
         return;
     } else {
         playDealerHand();
@@ -301,7 +279,12 @@ $(this).keyup(function (e) {
 
 $("button#deal").click(function () {
     dealGame();
-    var validAction = activeStrategy.getValidAction(Dealer.hands[0].cards[0], Player.hands[0]);
+    var validAction;
+    if (!GameOver) {
+        validAction = activeStrategy.getValidAction(Dealer.hands[0].cards[0], Player.hands[0]);
+        $('#debug').append("<p>" + validAction + "</p>");
+    }
+
 });
 
 $("button#hit").click(function () {

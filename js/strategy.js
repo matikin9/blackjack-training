@@ -30,30 +30,23 @@ function createStrategy(stratsource) {
 
     strat.getValidAction = function (dealerCard, playerHand) {
         var result;
-        var dealerCardValue;
-        var playerHandValue1;
-        var playerHandValue2;
+        var dealerCardValue = dealerCard.faceValue;
+        var playerHandValue;
+        var playerHandValues = playerHand.validSums();
 
-        if (dealerCard.face === "J" || dealerCard.face === "Q" || dealerCard.face === "K") {
-            dealerCardValue = "T";
-        } else {
-            dealerCardValue = dealerCard.face;
-        }
-
-        
-
+        playerHandValue = playerHandValues[playerHandValues.length - 1]; // Takes lowest value
 
         if (playerHand.isPair()) {
             // use Pair table
-            result = strat.pairTable[playerHand.cards[0].face][dealerCardValue];
+            result = this.pairTable[playerHand.cards[0].face][dealerCardValue];
         } else {
             var ace = playerHand.hasAce();
             if (ace >= 0) {
                 // use Soft table
-                result = strat.softTable[playerHand.cards[0].face][dealerCardValue];
+                result = this.softTable[playerHandValue][dealerCardValue];
             } else {
                 // use Hard table
-                result = strat.HardTable[playerHand.cards[0].face][dealerCardValue];
+                result = this.hardTable[playerHandValue][dealerCardValue];
             }
         }
 
