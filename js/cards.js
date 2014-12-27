@@ -13,6 +13,17 @@ function createCard(suit, face, sortNumber) {
     card.suit = suit;
     card.face = face;
     card.sortNumber = sortNumber;
+
+    switch (face) {
+        case "J":
+        case "Q":
+        case "K":
+            card.faceValue = "T";
+            break;
+        default:
+            card.faceValue = card.face;
+    }
+
     return card;
 }
 

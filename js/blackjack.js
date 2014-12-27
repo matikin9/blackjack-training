@@ -1,6 +1,8 @@
 var Dealer = {};
 var Player = {};
 var Deck = [];
+var activeStrategy = createStrategy(strat1);
+var GameOver = false;
 
 function Entity(hand) {
     this.hands = [];
@@ -50,35 +52,20 @@ function Hand(bet, cards) {
             result = newResult;
         });
 
-        return result;
+        return result.sort(function (a, b) {
+            return b - a;
+        });
     };
 
     this.isBlackjack = function () {
         if (this.cards.length != 2) {
             return false;
         } else {
-            switch (this.cards[0].face) {
-                case "A":
-                    switch (this.cards[1].face) {
-                        case "T":
-                        case "J":
-                        case "Q":
-                        case "K":
-                            return true;
-                        default:
-                            return false;
-                    }
-                case "T":
-                case "J":
-                case "Q":
-                case "K":
-                    if (this.cards[1].face === "A") {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                default:
-                    return false;
+            if ((this.cards[0].faceValue === "A" && this.cards[1].faceValue === "T") ||
+            (this.cards[0].faceValue === "T" && this.cards[1].faceValue === "A")) {
+                return true;
+            } else {
+                return false;
             }
         }
     };
@@ -87,33 +74,41 @@ function Hand(bet, cards) {
         if (this.cards.length != 2) {
             return false;
         } else {
-            switch (this.cards[0].face) {
-                case "T":
-                case "J":
-                case "Q":
-                case "K":
-                    switch (this.cards[1].face) {
-                        case "T":
-                        case "J":
-                        case "Q":
-                        case "K":
-                            return true;
-                        default:
-                            return false;
-                    }
-                default:
-                    if (this.cards[0].face === this.cards[1].face) {
-                        return true;
-                    } else {
-                        return false;
-                    }
+            if (this.cards[0].faceValue === this.cards[1].faceValue) {
+                return true;
+            } else {
+                return false;
             }
         }
     };
+
+    this.hasAce = function () {
+        for (var i = 0; i < cards.length; i++) {
+            if (cards[i].faceValue === "A") {
+                return i;
+            }
+        }
+        return -1;
+    };
+}
+
+function endGame(endResult) {
+    $("button#hit").prop('disabled', true);
+    $("button#stay").prop('disabled', true);
+    $("button#double").prop('disabled', true);
+    $("button#split").prop('disabled', true);
+    $("button#deal").prop('disabled', false);
+
+    showDealerHand(Dealer.hands[0]);
+    showPlayerHand(Player.hands[0]);
+    $("span#gameResults").html(endResult);
+    GameOver = true;
 }
 
 function dealGame() {
     Deck = createDeck(1);
+    GameOver = false;
+    $("span#gameResults").html("");
 
     var hand1 = [];
     var hand2 = [];
@@ -131,22 +126,26 @@ function dealGame() {
     showPlayerHand(Player.hands[0]);
 
     if (Dealer.hands[0].isBlackjack()) {
-        $("span#gameResults").html("Blackjack! Dealer wins!");
-
+        if (Player.hands[0].isBlackjack()) {
+            endGame("Tie!");
+        } else {
+            endGame("Blackjack! Dealer wins!");
+        }
     } else if (Player.hands[0].isBlackjack()) {
-        $("span#gameResults").html("Blackjack! Player wins!");
-
+        if (Dealer.hands[0].isBlackjack()) {
+            endGame("Tie!");
+        } else {
+            endGame("Blackjack! Player wins!");
+        }
     } else {
         $("button#deal").prop('disabled', true);
         $("button#hit").prop('disabled', false);
         $("button#stay").prop('disabled', false);
         $("button#double").prop('disabled', false);
-        $("span#gameResults").html("");
     }
 
     if (Player.hands[0].isPair()) {
         $("button#split").prop('disabled', false);
-        $("span#gameResults").html("");
     }
 }
 
@@ -161,25 +160,66 @@ function hitPlayer(i) {
     var result = Player.hands[i].validSums();
 
     if (result.length === 0) {
-        $("span#gameResults").html("Player busts, Dealer wins!");
-        $("button#deal").prop('disabled', false);
-        $("button#hit").prop('disabled', true);
-        $("button#stay").prop('disabled', true);
+        endGame("Player busts, Dealer wins!");
     } else {
         console.log("Sums: " + result)
     }
 }
 
+function showHand(entity) {
+    var selector;
+    var hand;
+    var sum;
+
+    if (entity === "Player") {
+        selector = "#playerHand";
+        hand = Player.hands[0];
+    } else {
+        selector = "#dealerHand";
+        hand = Dealer.hands[0];
+    }
+
+    sum = hand.validSums();
+    if (sum.length === 0) {
+        sum = "bust";
+    } else if (sum.length > 1) {
+        sum = sum[0];
+    }
+    $(selector).html(entity + "'s hand: " + displayFullHand(hand) + "(" + sum + ")");
+}
+
 function showDealerHand(hand) {
+    showHand("Dealer");
+    /*
     var results = displayFullHand(hand);
 
     $("#dealerHand").html("Dealer's hand: " + results);
+    showSum("Dealer");
+    */
 }
 
 function showPlayerHand(hand) {
+    showHand("Player");
+    /*
     var results = displayFullHand(hand);
 
     $("#playerHand").html("Player's hand: " + results);
+    showSum("Player");
+    */
+}
+
+function showValidAction() {
+    var validAction;
+    validAction = activeStrategy.getValidAction(Dealer.hands[0].cards[0], Player.hands[0]);
+    $('#debug').append("<p>" + validAction + "</p>");
+}
+
+function showSum(entity) {
+    if (entity === "Player") {
+        $("#playerHand").append("(sum)");
+    } else {
+        $("#dealerHand").append("(sum)");
+    }
 }
 
 function endPlayerTurn() {
@@ -217,7 +257,7 @@ function playDealerHand() {
     }
     
     if (dealerValidSums.length == 0) {
-        $("span#gameResults").html("Dealer busts, Player wins.");
+        endGame("Dealer busts, Player wins.");
     } else {
         var playerSums = Player.hands[0].validSums(); // ONLY COMPARES THE FIRST HAND
         var dealerSums = Dealer.hands[0].validSums();
@@ -235,13 +275,13 @@ function playDealerHand() {
 
         switch (playerResults) {
             case "win":
-                $("span#gameResults").html("Player wins!");
+                endGame("Player wins!");
                 break;
             case "tie":
-                $("span#gameResults").html("Tie!");
+                endGame("Tie!");
                 break;
             case "lose":
-                $("span#gameResults").html("Dealer wins!");
+                endGame("Dealer wins!");
                 break;
             default:
                 return;
@@ -252,11 +292,12 @@ function playDealerHand() {
 function playDouble(i) {
     Player.hands[i].cards.push(Deck.shift());
     showPlayerHand(Player.hands[i]);
+    endPlayerTurn();
 
     var result = Player.hands[i].validSums();
 
     if (result.length == 0) {
-        $("span#gameResults").html("Player busts, Dealer wins!");
+        endGame("Player busts, Dealer wins!");
         return;
     } else {
         playDealerHand();
@@ -291,13 +332,20 @@ $(this).keyup(function (e) {
     }
 });
 
-
 $("button#deal").click(function () {
+    $('#debug').empty();
     dealGame();
+    
+    if (!GameOver) {
+        showValidAction();
+    }
 });
 
 $("button#hit").click(function () {
     hitPlayer(0); // i = which hand to hit.
+    if (!GameOver) {
+        showValidAction();
+    }
 });
 
 $("button#stay").click(function () {
@@ -307,7 +355,6 @@ $("button#stay").click(function () {
 
 $("button#double").click(function () {
     playDouble(0); // i = which hand to double
-    endPlayerTurn();
 });
 
 $("button#split").click(function () {
@@ -327,6 +374,7 @@ $().ready(function () {
     $("#dealerHand").html("Dealer's hand: ");
     $("#playerHand").html("Player's hand: ");
 
-    $(".strategy-chart").hide();
+    displayStrategy(activeStrategy);
+    //$(".strategy-chart").hide();
 
 });
