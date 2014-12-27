@@ -34,11 +34,11 @@ function createStrategy(stratsource) {
         var playerHandValue;
         var playerHandValues = playerHand.validSums();
 
-        playerHandValue = playerHandValues[playerHandValues.length - 1]; // Takes lowest value
+        playerHandValue = playerHandValues[0]; // Takes highest value
 
         if (playerHand.isPair()) {
             // use Pair table
-            result = this.pairTable[playerHand.cards[0].face][dealerCardValue];
+            result = this.pairTable[playerHand.cards[0].faceValue][dealerCardValue];
         } else {
             var ace = playerHand.hasAce();
             if (ace >= 0) {
@@ -56,3 +56,77 @@ function createStrategy(stratsource) {
     return strat;
 }
 
+function displayStrategy(stratObject) {
+    displayStrategyTable(stratObject.hardTable, 'hard');
+    displayStrategyTable(stratObject.softTable, 'soft');
+    displayStrategyTable(stratObject.pairTable, 'pair');
+
+    /*
+    $chart_section = $('#strategy-charts');
+    
+    // Hard table
+    $chart_section.append('<table class="table table-condensed strategy-chart hard"></table>');
+    var $hard_table = $chart_section.find('table.hard');
+
+    $hard_table.append('<thead><tr></tr></thead>');
+    $hard_table.find('thead tr').append('<th scope="col">Hard</th>');
+    dealerCards.forEach(function (n) {
+        $chart_section.find('thead tr').append('<th scope="col">' + n + '</th>');
+    });
+    
+    $hard_table.append('<tbody></tbody>');
+    var $hard_table_body = $hard_table.find('tbody');
+    playerHard.forEach(function (playerCard) {
+        var rowString = '';
+        dealerCards.forEach(function (dealerCard) {
+            rowString += '<td>' + stratObject.hardTable[playerCard][dealerCard] + '</td>';
+        });
+        rowString = '<tr><th scope="row">' + playerCard + '</th>' + rowString + '</tr>'
+
+        $hard_table_body.append(rowString);
+    });
+    */
+
+}
+
+function displayStrategyTable(stratObjectTable, tableType) {
+    var playerCards;
+    switch(tableType) {
+        case "hard":
+            playerCards = playerHard;
+            break;
+        case "soft":
+            playerCards = playerSoft;
+            break;
+        case "pair":
+            playerCards = playerPair;
+            break;
+        default:
+            return;
+    }
+
+    $('#strategy-charts').append('<table class="table table-condensed strategy-chart ' + tableType + '-table"></table>');
+    var $curr_table = $('#strategy-charts').find('.' + tableType + '-table');
+
+    $curr_table.append('<thead><tr></tr></thead>');
+    $curr_table.find('thead tr').append('<th scope="col" class="col-md-1">' + tableType[0].toUpperCase() + tableType.substr(1) + '</th>');
+    dealerCards.forEach(function (n) {
+        $curr_table.find('thead tr').append('<th scope="col" class="col-md-1">' + n + '</th>');
+    });
+    
+    $curr_table.append('<tbody></tbody>');
+    var $curr_table_body = $curr_table.find('tbody');
+    playerCards.forEach(function (playerCard) {
+        var rowString = '';
+        dealerCards.forEach(function (dealerCard) {
+            rowString += '<td>' + stratObjectTable[playerCard][dealerCard] + '</td>';
+        });
+
+        if (tableType === "pair") {
+            rowString = '<tr><th scope="row">' + playerCard + ',' + playerCard + '</th>' + rowString + '</tr>'
+        } else {
+            rowString = '<tr><th scope="row">' + playerCard + '</th>' + rowString + '</tr>'
+        }
+        $curr_table_body.append(rowString);
+    });
+}
