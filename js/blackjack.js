@@ -309,26 +309,30 @@ function playSplit(i) {
 }
 
 $(this).keyup(function (e) {
+    var $buttonToActivate;
+
     switch (e.which) {
         case 72:
-            hitPlayer(0);
+            $buttonToActivate = $('button#hit');
             break;
         case 83:
-            endPlayerTurn();
-            playDealerHand();
+            $buttonToActivate = $('button#stay');
             break;
         case 68:
-            playDouble(0);
-            endPlayerTurn();
+            $buttonToActivate = $('button#double');
             break;
         case 80:
-            playSplit(0);
+            $buttonToActivate = $('button#split');
             break;
-        case 32:
-            dealGame();
+        case 78:
+            $buttonToActivate = $('button#deal');
             break;
         default:
-            // nothing
+            return;
+    }
+
+    if (!$buttonToActivate.is(':disabled')) {
+        $buttonToActivate.trigger('click');
     }
 });
 
@@ -375,6 +379,6 @@ $().ready(function () {
     $("#playerHand").html("Player's hand: ");
 
     displayStrategy(activeStrategy);
-    //$(".strategy-chart").hide();
+    $(".strategy-chart").hide();
 
 });
