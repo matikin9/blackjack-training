@@ -185,27 +185,17 @@ function showHand(entity) {
     } else if (sum.length > 1) {
         sum = sum[0];
     }
-    $(selector).html(entity + "'s hand: " + displayFullHand(hand) + "(" + sum + ")");
+    $(selector).empty();
+    $(selector).append(displayFullHand(hand));
+    //$(selector).html(entity + "'s hand: " + displayFullHand(hand) + "(" + sum + ")");
 }
 
 function showDealerHand(hand) {
     showHand("Dealer");
-    /*
-    var results = displayFullHand(hand);
-
-    $("#dealerHand").html("Dealer's hand: " + results);
-    showSum("Dealer");
-    */
 }
 
 function showPlayerHand(hand) {
     showHand("Player");
-    /*
-    var results = displayFullHand(hand);
-
-    $("#playerHand").html("Player's hand: " + results);
-    showSum("Player");
-    */
 }
 
 function showValidAction() {
@@ -370,6 +360,21 @@ $("button#chart").click(function () {
 });
 
 $().ready(function () {
+    $("button#deal").hide();
+    SpriteArray = new Object();
+
+    $.get(SpriteXMLPath, function (data) {
+        $(data).find('SubTexture').each(function () {
+            var spriteObj = new Object();
+            spriteObj.x = $(this).attr('x');
+            spriteObj.y = $(this).attr('y');
+            spriteObj.width = $(this).attr('width');
+            spriteObj.height = $(this).attr('height');
+            handleCardSprite(spriteObj, $(this).attr('name'));
+        });
+        $("button#deal").show();
+    });
+
     $("button#hit").prop('disabled', true);
     $("button#stay").prop('disabled', true);
     $("button#double").prop('disabled', true);

@@ -1,6 +1,9 @@
 var Suits = [ "S", "H", "C", "D" ];
 var Faces = [ "A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K" ];
 var Deck = [];
+var SpriteArray;
+var SpriteImagePath = "assets/playingCards.png";
+var SpriteXMLPath = "assets/playingCards.xml";
 
 function sortByNum(a, b) {
     var aNum = a.sortNumber;
@@ -28,13 +31,29 @@ function createCard(suit, face, sortNumber) {
 }
 
 function displayFullHand(hand) {
-    var result = "";
+    var $hand = $('<div></div>');
 
     hand.cards.forEach(function (card) {
-        result += card.suit.toString() + card.face.toString() + " ";
+        var $wrapper = $('<div class="clipWrapper"></div>')
+        var $cardImg = $('<img src="' + SpriteImagePath + '" class="clip" />');
+        var cardLabel = card.suit.toString() + card.face.toString();
+        var cardSprite = SpriteArray[cardLabel];
+        var top = parseInt(cardSprite.y);
+        var bottom = parseInt(cardSprite.y) + parseInt(cardSprite.height);
+        var left = parseInt(cardSprite.x);
+        var right = parseInt(cardSprite.x) + parseInt(cardSprite.width);
+        $cardImg.css('clip', 'rect(' + top + 'px ' + right + 'px ' + bottom + 'px ' + left + 'px)');
+        $cardImg.css('left', -1 * left);
+        $cardImg.css('top', -1 * top);
+        $wrapper.append($cardImg);
+        $hand.append($wrapper);
     });
 
-    return result;
+    return $hand;
+}
+
+function handleCardSprite(obj, name) {
+    SpriteArray[name] = obj;
 }
 
 function createDeck(num) {
@@ -43,7 +62,8 @@ function createDeck(num) {
     while (num > 0) {
         Suits.forEach(function (suit) {
             Faces.forEach(function (face) {
-                results.push(createCard(suit, face, Math.random()));
+                var card = createCard(suit, face, Math.random());
+                results.push(card);
             });
         });
         num--;
