@@ -124,7 +124,6 @@ function endGame(result) {
     showDealerHand(Dealer.hands[0], false);
     showPlayerHand(Player.hands[0]);
     // resultString relegated to console since color/panel-heading implementation.
-    //$("span#gameResults").html(resultString);
     console.log(resultString);
     GameOver = true;
 }
