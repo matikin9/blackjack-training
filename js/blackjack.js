@@ -92,16 +92,40 @@ function Hand(bet, cards) {
     };
 }
 
-function endGame(endResult) {
+function endGame(result) {
+    var resultString = "";
+
+    if (result.indexOf("tie") >= 0) {
+        resultString += "* Tie!";
+    } else if (result.indexOf("blackjack") >= 0) {
+        resultString += "* Blackjack! ";
+    } else if (result.indexOf("bust") >= 0){
+        resultString += "* Bust! ";
+    }
+
+    if (result.indexOf("player") >= 0) {
+        resultString += "* Player wins!";
+        $('#panel-player').addClass('panel-success');
+        $('#panel-player .panel-heading').append(' - WIN!');
+        $('#panel-dealer').addClass('panel-danger');
+    } else {
+        resultString += "* Dealer wins!";
+        $('#panel-dealer').addClass('panel-success');
+        $('#panel-dealer .panel-heading').append(' - WIN!');
+        $('#panel-player').addClass('panel-danger');
+    }
+
     $("button#hit").prop('disabled', true);
     $("button#stay").prop('disabled', true);
     $("button#double").prop('disabled', true);
     $("button#split").prop('disabled', true);
     $("button#deal").prop('disabled', false);
 
-    showDealerHand(Dealer.hands[0]);
+    showDealerHand(Dealer.hands[0], false);
     showPlayerHand(Player.hands[0]);
-    $("span#gameResults").html(endResult);
+    // resultString relegated to console since color/panel-heading implementation.
+    //$("span#gameResults").html(resultString);
+    console.log(resultString);
     GameOver = true;
 }
 
@@ -109,6 +133,13 @@ function dealGame() {
     Deck = createDeck(1);
     GameOver = false;
     $("span#gameResults").html("");
+    $("#panel-dealer").removeClass("panel-success");
+    $("#panel-dealer").removeClass("panel-danger");
+    $("#panel-dealer .panel-heading").text("Dealer");
+    
+    $("#panel-player").removeClass("panel-success");
+    $("#panel-player").removeClass("panel-danger");
+    $("#panel-player .panel-heading").text("Player");
 
     var hand1 = [];
     var hand2 = [];
@@ -122,26 +153,31 @@ function dealGame() {
     Player = new Entity(new Hand(0, hand2));
 
     // Only show dealer's first card when dealing:
-    $("#dealerHand").html("Dealer's hand: " + Dealer.hands[0].cards[0].suit.toString() + Dealer.hands[0].cards[0].face.toString());
+    //$("#dealerHand").html("Dealer's hand: " + Dealer.hands[0].cards[0].suit.toString() + Dealer.hands[0].cards[0].face.toString());
+    
+    $("#dealerHand").empty();
+    $("#dealerHand").append(displayFirstCard(Dealer.hands[0]));
+    
     showPlayerHand(Player.hands[0]);
 
     if (Dealer.hands[0].isBlackjack()) {
         if (Player.hands[0].isBlackjack()) {
-            endGame("Tie!");
+            endGame(["tie"]);
         } else {
-            endGame("Blackjack! Dealer wins!");
+            endGame(["blackjack", "dealer"]);
         }
     } else if (Player.hands[0].isBlackjack()) {
         if (Dealer.hands[0].isBlackjack()) {
-            endGame("Tie!");
+            endGame(["tie"]);
         } else {
-            endGame("Blackjack! Player wins!");
+            endGame(["blackjack", "player"]);
         }
     } else {
         $("button#deal").prop('disabled', true);
         $("button#hit").prop('disabled', false);
         $("button#stay").prop('disabled', false);
         $("button#double").prop('disabled', false);
+        $("button#split").prop('disabled', true);
     }
 
     if (Player.hands[0].isPair()) {
@@ -160,9 +196,7 @@ function hitPlayer(i) {
     var result = Player.hands[i].validSums();
 
     if (result.length === 0) {
-        endGame("Player busts, Dealer wins!");
-    } else {
-        console.log("Sums: " + result)
+        endGame(["bust", "dealer"]);
     }
 }
 
@@ -187,11 +221,14 @@ function showHand(entity) {
     }
     $(selector).empty();
     $(selector).append(displayFullHand(hand));
-    //$(selector).html(entity + "'s hand: " + displayFullHand(hand) + "(" + sum + ")");
 }
 
-function showDealerHand(hand) {
-    showHand("Dealer");
+function showDealerHand(hand, first) {
+    if (first) {
+        
+    } else {
+        showHand("Dealer");
+    }
 }
 
 function showPlayerHand(hand) {
@@ -221,7 +258,7 @@ function endPlayerTurn() {
 }
 
 function playDealerHand() {
-    showDealerHand(Dealer.hands[0]);
+    showDealerHand(Dealer.hands[0], false);
     var dealerValidSums = Dealer.hands[0].validSums();
     var dealerDone = false;
     // if any valid sum is 17 or greater, stay.
@@ -242,12 +279,12 @@ function playDealerHand() {
         } else {
             Dealer.hands[0].cards.push(Deck.shift());
             dealerValidSums = Dealer.hands[0].validSums();
-            showDealerHand(Dealer.hands[0]);
+            showDealerHand(Dealer.hands[0], false);
         }
     }
     
     if (dealerValidSums.length == 0) {
-        endGame("Dealer busts, Player wins.");
+        endGame(["bust", "player"]);
     } else {
         var playerSums = Player.hands[0].validSums(); // ONLY COMPARES THE FIRST HAND
         var dealerSums = Dealer.hands[0].validSums();
@@ -265,13 +302,13 @@ function playDealerHand() {
 
         switch (playerResults) {
             case "win":
-                endGame("Player wins!");
+                endGame(["player"]);
                 break;
             case "tie":
-                endGame("Tie!");
+                endGame(["tie"]);
                 break;
             case "lose":
-                endGame("Dealer wins!");
+                endGame(["dealer"]);
                 break;
             default:
                 return;
@@ -287,7 +324,7 @@ function playDouble(i) {
     var result = Player.hands[i].validSums();
 
     if (result.length == 0) {
-        endGame("Player busts, Dealer wins!");
+        endGame(["bust", "dealer"]);
         return;
     } else {
         playDealerHand();

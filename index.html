@@ -13,289 +13,79 @@
         <link rel="stylesheet" href="css/style.css">
     </head>
     <body>
-        <div class="container">
-            <h1>Blackjack Strategy Trainer</h1>
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">Blackjack</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="#">Home <span class="sr-only">(current)</span></a></li>
+                        <li><a href="#">Parameters</a></li>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+
+        <div class="container-fluid">
             <div class="row">
                 <div class="col-md-10">
-                    <div class="container">
-                        <div>
-                            <p>
-                                <span id="dealerHand"></span> <span id="dealerSum"></span><br />
-                                <span id="playerHand"></span> <span id="playerSum"></span><br />
-                                <span id="gameResults"></span>
-                            </p>
+                        <div id="panel-dealer" class="panel panel-default">
+                            <div class="panel-heading">Dealer</div>
+                            <div class="panel-body">
+                                <span id="dealerHand"></span>
+                            </div>
                         </div>
 
-                    </div>
+                        <div id="panel-player" class="panel panel-default">
+                            <div class="panel-heading">Player</div>
+                            <div class="panel-body">
+                                <span id="playerHand"></span>
+                            </div>
+                        </div>
+                        
+                        <span id="gameResults"></span>
+
+                        <div class="panel panel-default">
+                            <div class="panel-heading">Actions</div>
+                            <div id="actions" class="panel-body">
+                                <button type="button" class="btn btn-default" id="deal">Deal [n]</button> 
+                                <button type="button" class="btn btn-default" id="hit">Hit [h]</button> 
+                                <button type="button" class="btn btn-default" id="stay">Stay [s]</button> 
+                                <button type="button" class="btn btn-default" id="double">Double [d]</button> 
+                                <button type="button" class="btn btn-default" id="split">Split [p]</button>
+                            </div>
+                        </div>
+                </div><!-- /.col-md-10 -->
+
+                <div class="col-md-2">
                     <div class="panel panel-default">
                         <div class="panel-heading">Debug</div>
                         <div id="debug" class="panel-body">
-                                
                         </div>
                     </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">Actions</div>
-                        <div id="actions" class="panel-body">
-                            <button type="button" class="btn btn-default" id="deal">Deal</button><br /><br />
-                            <button type="button" class="btn btn-default" id="hit">Hit</button><br /><br />
-                            <button type="button" class="btn btn-default" id="stay">Stay</button><br /><br />
-                            <button type="button" class="btn btn-default" id="double">Double</button><br /><br />
-                            <button type="button" class="btn btn-default" id="split">Split</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                </div><!-- /.col-md-2 -->
+            </div><!-- /.row -->
+
             <div class="row">
                 <div class="col-md-12">
                     <div id="strategy-charts">
                         <button type="button" class="btn btn-default" id="chart">Chart</button><br /><br />
-                        <!--
-                        <table class="table table-condensed strategy-chart">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Hard</th>
-                                    <th scope="col">2</th>
-                                    <th scope="col">3</th>
-                                    <th scope="col">4</th>
-                                    <th scope="col">5</th>
-                                    <th scope="col">6</th>
-                                    <th scope="col">7</th>
-                                    <th scope="col">8</th>
-                                    <th scope="col">9</th>
-                                    <th scope="col">10</th>
-                                    <th scope="col">A</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th scope="row">5</th>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">6</th>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">7</th>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">8</th>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>Dh</td>
-                                    <td>Dh</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">9</th>
-                                    <td>Dh</td>
-                                    <td>Dh</td>
-                                    <td>Dh</td>
-                                    <td>Dh</td>
-                                    <td>Dh</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">10</th>
-                                    <td>Dh</td>
-                                    <td>Dh</td>
-                                    <td>Dh</td>
-                                    <td>Dh</td>
-                                    <td>Dh</td>
-                                    <td>Dh</td>
-                                    <td>Dh</td>
-                                    <td>Dh</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">11</th>
-                                    <td>Dh</td>
-                                    <td>Dh</td>
-                                    <td>Dh</td>
-                                    <td>Dh</td>
-                                    <td>Dh</td>
-                                    <td>Dh</td>
-                                    <td>Dh</td>
-                                    <td>Dh</td>
-                                    <td>Dh</td>
-                                    <td>Dh</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">12</th>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">13</th>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">14</th>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">15</th>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">16</th>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                    <td>H</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">17</th>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">18</th>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">19</th>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">20</th>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">21</th>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                    <td>S</td>
-                                </tr>
-                            </tbody>
-                        </table>-->
                     </div>
                 </div>
-            </div>
-        </div>
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+
+
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
         <!-- Latest compiled and minified JavaScript -->
